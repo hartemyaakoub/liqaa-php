@@ -33,13 +33,13 @@ Sign your authenticated user's identity with `sk_live_…` and get back a 1-hour
 use Liqaa\LiqaaClient;
 
 $client = new LiqaaClient(
-    publicKey: $_ENV['LIQAA_PK'],
-    secretKey: $_ENV['LIQAA_SK'],
+ publicKey: $_ENV['LIQAA_PK'],
+ secretKey: $_ENV['LIQAA_SK'],
 );
 
 $token = $client->exchangeSdkToken([
-    'email' => $user->email,
-    'name'  => $user->name,
+ 'email' => $user->email,
+ 'name' => $user->name,
 ]);
 
 // Pass $token['sdk_token'] to your frontend.
@@ -49,11 +49,11 @@ $token = $client->exchangeSdkToken([
 
 ```php
 $conv = $client->createConversation(
-    callerEmail: 'agent@yoursite.com',
-    callerName:  'Support Agent',
-    calleeEmail: 'customer@example.com',
-    calleeName:  'Customer X',
-    externalConversationId: 'ticket-42',
+ callerEmail: 'agent@yoursite.com',
+ callerName: 'Support Agent',
+ calleeEmail: 'customer@example.com',
+ calleeName: 'Customer X',
+ externalConversationId: 'ticket-42',
 );
 
 // → $conv['join_url'] e.g. https://liqaa.io/meeting/room-abc123
@@ -65,12 +65,12 @@ $conv = $client->createConversation(
 use Liqaa\WebhookVerifier;
 
 $verifier = new WebhookVerifier($_ENV['LIQAA_WEBHOOK_SECRET']);
-$payload  = file_get_contents('php://input');
-$header   = $_SERVER['HTTP_X_LIQAA_SIGNATURE'] ?? '';
+$payload = file_get_contents('php://input');
+$header = $_SERVER['HTTP_X_LIQAA_SIGNATURE'] ?? '';
 
 if (! $verifier->verify($payload, $header)) {
-    http_response_code(401);
-    exit;
+ http_response_code(401);
+ exit;
 }
 $event = json_decode($payload, true);
 // $event['event'] === 'call.started' / 'call.ended' / etc.
@@ -87,16 +87,16 @@ For Laravel apps, [`examples/laravel`](./examples/laravel) ships:
 
 ## API surface
 
-| Method                                       | Description                                     |
+| Method | Description |
 | -------------------------------------------- | ----------------------------------------------- |
-| `LiqaaClient::exchangeSdkToken($identity)`   | Identity → 1-hour JWT for the browser           |
-| `LiqaaClient::createConversation(...)`       | Create or reuse a persistent room               |
-| `LiqaaClient::getConversation($id)`          | Fetch room state                                |
-| `LiqaaClient::endConversation($id)`          | End an active call                              |
-| `LiqaaClient::createWebhook($url, $events)`  | Subscribe to events                             |
-| `LiqaaClient::listWebhooks()`                | List your subscriptions                         |
-| `LiqaaClient::deleteWebhook($id)`            | Cancel a subscription                           |
-| `WebhookVerifier::verify($body, $header)`    | Constant-time HMAC verification + replay window |
+| `LiqaaClient::exchangeSdkToken($identity)` | Identity → 1-hour JWT for the browser |
+| `LiqaaClient::createConversation(...)` | Create or reuse a persistent room |
+| `LiqaaClient::getConversation($id)` | Fetch room state |
+| `LiqaaClient::endConversation($id)` | End an active call |
+| `LiqaaClient::createWebhook($url, $events)` | Subscribe to events |
+| `LiqaaClient::listWebhooks()` | List your subscriptions |
+| `LiqaaClient::deleteWebhook($id)` | Cancel a subscription |
+| `WebhookVerifier::verify($body, $header)` | Constant-time HMAC verification + replay window |
 
 Full reference at [**liqaa.io/docs**](https://liqaa.io/docs).
 
